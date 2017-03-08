@@ -2,7 +2,7 @@ FROM php:5.6-alpine
 
 MAINTAINER erwinmaruli <erwinmaruli@live.com>
 
-EXPOSE 5000
+EXPOSE 3000
 # we need to update repo database
 RUN apk update && apk upgrade &&\
 #in some case php composer need git to download dependency
@@ -26,7 +26,14 @@ RUN apk update && apk upgrade &&\
     docker-php-ext-install mcrypt
 
 WORKDIR /usr/src/app
-RUN curl -O https://getcomposer.org/composer.phar
+RUN curl -o /usr/local/bin/composer.phar https://getcomposer.org/composer.phar && \
+    ln -s /usr/local/bin/composer.phar /usr/local/bin/composer && \
+    curl -o /usr/local/bin/phpunit.phar https://phar.phpunit.de/phpunit-5.7.phar && \
+    ln -s /usr/local/bin/phpunit.phar /usr/local/bin/phpunit && \
+    chmod 755 /usr/local/bin/composer* /usr/local/bin/phpunit*
+RUN echo "<?php phpinfo(); ?>" > index.php
 
 # Start the app
-CMD ["php -v"]
+
+ENTRYPOINT ["php"]
+CMD ["-v"]
