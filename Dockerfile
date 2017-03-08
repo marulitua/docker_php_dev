@@ -33,7 +33,10 @@ RUN curl -o /usr/local/bin/composer.phar https://getcomposer.org/composer.phar &
     chmod 755 /usr/local/bin/composer* /usr/local/bin/phpunit*
 RUN echo "<?php phpinfo(); ?>" > index.php
 
-# Start the app
+#Add additional config
+COPY config/cust.ini /usr/local/etc/php/conf.d/
+RUN chmod 755 /usr/local/etc/php/conf.d/cust.ini
 
+# Start the app
 ENTRYPOINT ["php"]
 CMD ["-v"]
